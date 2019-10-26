@@ -12,6 +12,9 @@ parser.add_argument('--end_date', action="store", help="end_data", type=str)
 parser.add_argument('--ema_day', action="store", help="EMA days", type=int)
 parser.add_argument('--last_days_count', action="store", help="Latest days to consider", type=int)
 
+NIFTY_50_URL = 'https://www.nseindia.com/content/indices/ind_nifty50list.csv'
+NIFTY_NEXT_50_URL = 'https://www.nseindia.com/content/indices/ind_niftynext50list.csv'
+
 
 class StockScanner(object):
     """
@@ -35,10 +38,11 @@ class StockScanner(object):
         :return:
         """
         # TODO: Web Scrap Nse Web Site to get Nifty 50 and Nifty next 50 Stocks Symbol
-
-        url = 'https://www.nseindia.com/content/indices/ind_nifty50list.csv'
-        s = requests.get(url).content
-        df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+        s = requests.get(NIFTY_50_URL).content
+        nifty_df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+        s = requests.get(NIFTY_NEXT_50_URL).content
+        nifty_next_df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+        df = nifty_df.append(nifty_next_df)
         return df.Symbol
 
     def scan_stocks(self):
@@ -46,7 +50,7 @@ class StockScanner(object):
         Perform Scanning of Stocks of Nifty 50
         :return:
         """
-        for symbol in self._get_stock_symbols():
+        for i, symbol in enumerate(self._get_stock_symbols()):
             stock_history = self._get_history(symbol)
             self.stocks_info_list.append(stock_history)
 
