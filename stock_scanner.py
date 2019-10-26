@@ -47,7 +47,7 @@ class StockScanner(object):
 
     def scan_stocks(self):
         """
-        Perform Scanning of Stocks of Nifty 50
+        Perform Scanning of Stocks of Nifty 50 and Nifty next 50
         :return:
         """
         for i, symbol in enumerate(self._get_stock_symbols()):
