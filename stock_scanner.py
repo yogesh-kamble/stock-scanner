@@ -118,48 +118,6 @@ class MovingAverageStrategy(StockScanner):
                 #if not is_within_existing_support:
 
 
-class BollingerBandStrategy(StockScanner):
-    """This Class implement EMA Strategy to get all stocks crossing given day EMA
-    """
-    def __init__(self, **kwargs):
-        super(BollingerBandStrategy, self).__init__(**kwargs)
-        self.sma_day = kwargs.get('sma_day')
-        self.last_days_count = kwargs.get('last_days_count')
-        self.stock_crossed_ema_list = []
-
-    def get_stocks_crossing_ema(self):
-        with open('stocks.csv', 'w') as f:
-            f.write('Stock,Price' + '\n')
-            for stock in self.stock_crossed_ema_list:
-                print(stock['symbol'][0] + ',' + str(stock['close'].tail(1)[0]))
-                f.write(stock['symbol'][0] + ',' + str(stock['close'].tail(1)[0]) + '\n')
-
-    def filter_stocks_for_crossing_sma(self):
-        """
-        :return:
-        """
-        close_sma = 'close_%s_sma'%self.sma_day
-        for stock_data in self.stocks_info_list:
-            stock = StockDataFrame.retype(stock_data)
-            _ = stock[close_sma]
-            # if stock_info['close'] > stock_info[close_sma]:
-            #     self.stock_crossed_ema_list.append(stock_data)
-
-    def display_atr(self):
-        """
-        :return:
-        """
-        for stock_data in self.stocks_info_list:
-            stock = StockDataFrame.retype(stock_data)
-            print(stock.tail(1))
-
-
-    def filter_stocks_for_rsi(self):
-        """
-        :return:
-        """
-
-
 if __name__ == '__main__':
     args = parser.parse_args()
     ema = MovingAverageStrategy(start_date=args.start_date, end_date=args.end_date, ema_day=args.ema_day,
