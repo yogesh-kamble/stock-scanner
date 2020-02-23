@@ -53,15 +53,19 @@ class StockScanner(object):
         else:
             s = requests.get(NIFTY_500_URL).content
             df = pd.read_csv(io.StringIO(s.decode('utf-8')))
-        return df.Symbol
+        return df
 
     def scan_stocks(self):
         """
         Perform Scanning of Stocks of Nifty 50 and Nifty next 50
         :return:
         """
-        for i, symbol in enumerate(self._get_stock_symbols()):
+        symbol_data = self._get_stock_symbols()
+        for symbol_info in symbol_data.values:
+            symbol, industry, company = symbol_info[2], symbol_info[1], symbol_info[0]
             stock_history = self._get_history(symbol)
+            stock_history['Industry'] = industry
+            stock_history['Company'] = company
             self.stocks_info_list.append(stock_history)
 
 
