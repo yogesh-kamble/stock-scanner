@@ -1,6 +1,7 @@
 from stockstats import StockDataFrame
 from nsepy import get_history
 from utils import get_datestr_to_date
+from constants import *
 import pandas as pd
 import io
 import requests
@@ -14,6 +15,7 @@ parser.add_argument('--last_days_count', action="store", help="Latest days to co
 
 NIFTY_50_URL = 'https://www1.nseindia.com/content/indices/ind_nifty50list.csv'
 NIFTY_NEXT_50_URL = 'https://www1.nseindia.com/content/indices/ind_niftynext50list.csv'
+NIFTY_500_URL = 'https://www1.nseindia.com/content/indices/ind_nifty500list.csv'
 
 
 class StockScanner(object):
@@ -24,6 +26,7 @@ class StockScanner(object):
         """
         self.start_date = kwargs.get('start_date')
         self.end_date = kwargs.get('end_date')
+        self.index = kwargs.get('index')
         self.stocks_info_list = []
 
     def _get_history(self, symbol):
@@ -38,11 +41,18 @@ class StockScanner(object):
         :return:
         """
         # TODO: Web Scrap Nse Web Site to get Nifty 50 and Nifty next 50 Stocks Symbol
-        s = requests.get(NIFTY_50_URL).content
-        nifty_df = pd.read_csv(io.StringIO(s.decode('utf-8')))
-        s = requests.get(NIFTY_NEXT_50_URL).content
-        nifty_next_df = pd.read_csv(io.StringIO(s.decode('utf-8')))
-        df = nifty_df.append(nifty_next_df)
+        if self.index == NIFTY50:
+            s = requests.get(NIFTY_50_URL).content
+            df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+        elif self.index == NIFTYNEXT50:
+            s = requests.get(NIFTY_50_URL).content
+            nifty_df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+            s = requests.get(NIFTY_NEXT_50_URL).content
+            nifty_next_df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+            df = nifty_df.append(nifty_next_df)
+        else:
+            s = requests.get(NIFTY_500_URL).content
+            df = pd.read_csv(io.StringIO(s.decode('utf-8')))
         return df.Symbol
 
     def scan_stocks(self):
