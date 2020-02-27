@@ -33,6 +33,7 @@ class BollingerBandStrategy(StockScanner):
         :param stock:
         :return:
         """
+        is_mid_boll_above = False
         try:
             current_close_price = stock['close'].tail(1)[0]
             current_open_price = stock['open'].tail(1)[0]
@@ -46,9 +47,14 @@ class BollingerBandStrategy(StockScanner):
             new_sma_price = sma_price + half_percent
             one_percent = sma_price * 1/100
             one_percent_sma_price = sma_price + one_percent
-            return current_close_price <= new_sma_price and current_open_price <= one_percent_sma_price
+            if current_open_price > current_close_price:
+                # Consider Red Candle near mid bollinger
+                print("I am near mid bollinger")
+                is_mid_boll_above = current_open_price <= new_sma_price and current_close_price <= one_percent_sma_price
+            else:
+                is_mid_boll_above = current_close_price <= new_sma_price and current_open_price <= one_percent_sma_price
 
-        return False
+        return is_mid_boll_above
 
     def is_stock_crossing_midboll_below(self, stock):
         """
