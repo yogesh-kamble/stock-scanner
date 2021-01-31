@@ -44,17 +44,18 @@ plt.grid(True)
 axs[0].plot(df['delivery_SMA_3'],label='SMA 3 days delivery')
 axs[0].plot(df['delivery_SMA_5'],label='SMA 5 days delivery')
 axs[0].plot(df['delivery_SMA_10'],label='SMA 10 days delivery')
+axs[0].legend(loc=2)
 
 # Plot Turnover data
 axs[1].plot(df['delivery_turnover_3'],label='SMA 3 days turnover')
 axs[1].plot(df['delivery_turnover_5'],label='SMA 5 days turnover')
 axs[1].plot(df['delivery_turnover_10'],label='SMA 10 days turnover')
+axs[1].legend(loc=2)
 
 # Plot Turnover data
 axs[2].plot(df['close_3'],label='SMA 3 days close')
 axs[2].plot(df['close_5'],label='SMA 5 days close')
 axs[2].plot(df['close_10'],label='SMA 10 days close')
-
-plt.legend(loc=2)
+axs[2].legend(loc=2)
 
 plt.show()
